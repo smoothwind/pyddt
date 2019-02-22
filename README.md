@@ -113,6 +113,6 @@ UI 比较丑(不擅长tkinter窗体布局)
 
 ## Bug report & feature request
 
-send to: itbuddy@163.com
-subject: pyddt bug | pyddt feature request.
+Receiver: itbuddy@163.com
+Subject: pyddt bug | pyddt feature request.
 
