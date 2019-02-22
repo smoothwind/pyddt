@@ -3,12 +3,13 @@
 根据登录用户，查询所有表。用户可以选择所需表导出
 
 ## 注意 Attention
-UI 比较丑
+UI 比较丑(不擅长tkinter窗体布局)
 
 自带目录
 
 保存格式为xls
 
+目前仅支持Oracle
 
 
 ## 前提条件 Prerequisite
@@ -109,4 +110,8 @@ UI 比较丑
 ### 数据库文档保存位置
 
 默认保存在`src/exports/`下面，如果路径不存在，会自动创建
+
+## Bug report & feature request
+
+itbuddy@163.com
 
