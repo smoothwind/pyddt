@@ -211,6 +211,9 @@ class ObjectViewer:
         :return: None
         """
         if file_output_path is None:
+            import os
+            if not os.path.exists("export"):
+                os.mkdir("export")
             now = datetime.now()
             file_output_path = "export/dict_%s.xls" % now.strftime("%Y-%m-%d_%H-%M-%S")
         if len(list(self.selected_list)) == 0:
