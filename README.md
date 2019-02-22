@@ -27,7 +27,7 @@ UI 比较丑
 * 程序入口 entry.py
 
   ```bash
-  python entry.py
+  python entry.py # src/gui/entry.py
   ```
 
   
