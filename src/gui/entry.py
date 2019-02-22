@@ -8,7 +8,8 @@ from tkinter import messagebox
 from src.gui.work_panel import ObjectViewer
 import cx_Oracle as Cx
 
-ini_file_name = "options.ini"
+ini_file_name = 'options.ini'
+
 
 def parse_conn_list(cf, section, key):
     values: list = []
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     default_conn = ""
     conn_list: list = []
     cf = ConfigParser()
-    cf.read(filenames=ini_file_name,encoding="utf-8")
+    cf.read(filenames=ini_file_name, encoding="utf-8")
     conn_list = parse_conn_list(cf=cf, section="oracle", key="list")
 
     """
