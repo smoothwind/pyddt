@@ -45,7 +45,7 @@ UI 比较丑
 
 [代码位置](src/gui/entry.py)
 
-![1550831576190](README.assets\1550831576190.png)
+![1550831576190](README.assets/1550831576190.png)
 
 
 
@@ -77,7 +77,7 @@ UI 比较丑
 
 [代码位置](src\gui\work_panel.py)
 
-![1550832696184](README.assets\1550832696184.png)
+![1550832696184](README.assets/1550832696184.png)
 
 #### 窗体布局
 
