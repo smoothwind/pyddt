@@ -62,8 +62,7 @@ UI 比较丑(不擅长tkinter窗体布局)
    - tnsname文件的典型配置如下：
 
     ```
-    db =
-   (DESCRIPTION =
+    db = (DESCRIPTION =
     (ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521))
     (CONNECT_DATA =
       (SERVER = DEDICATED)
