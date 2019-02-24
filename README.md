@@ -75,7 +75,7 @@ UI 比较丑(不擅长tkinter窗体布局)
 
 ### 工作台
 
-[代码位置](src\gui\work_panel.py)
+[代码位置](src/gui/work_panel.py)
 
 ![1550832696184](README.assets/1550832696184.png)
 
