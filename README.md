@@ -61,14 +61,12 @@ UI 比较丑(不擅长tkinter窗体布局)
    - db 是配置在tnsnames.ora 文件中。
    - tnsname文件的典型配置如下：
 
-    ```
- db =
+    ```db =
    (DESCRIPTION =
     (ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521))
     (CONNECT_DATA =
       (SERVER = DEDICATED)
-      (SERVICE_NAME = orcl)))
-    ```
+      (SERVICE_NAME = orcl)))```
 
 3. `测试` 按钮就是测试数据库是否可以成功连接。
 4. `下一步`按钮，点击后转入[工作台](#user-content-工作台)
