@@ -7,7 +7,7 @@ UI 比较丑(不擅长tkinter窗体布局)
 
 自带目录
 
-保存格式为xls
+保存格式为xls/docx
 
 目前仅支持Oracle
 
