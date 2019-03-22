@@ -1,6 +1,7 @@
 # pyddt
+
 数据库表结构说明文档生成器。
-根据登录用户，查询所有表。用户可以选择所需表导出
+根据登录用户权限, 查询表清单，用户按需批量导出数据库表结构说明。
 
 ## 注意 Attention
 UI 比较丑(不擅长tkinter窗体布局)
@@ -25,6 +26,7 @@ UI 比较丑(不擅长tkinter窗体布局)
   pip install xlrd
   pip install xlutils
   pip install logging
+  pip install python-docx
   ```
 
 
@@ -37,6 +39,7 @@ UI 比较丑(不擅长tkinter窗体布局)
   python entry.py # src/gui/entry.py
   
   ```
+
 
    
 
