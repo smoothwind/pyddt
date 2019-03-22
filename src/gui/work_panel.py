@@ -1,17 +1,19 @@
-# -*- coding: UTF-8 -*-
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from datetime import datetime
 import threading
 import tkinter as tk
-from pandas import ExcelWriter
-from tkinter import ttk
+from datetime import datetime
 from tkinter import messagebox
-from .util.excel.xls_util import write_content
-from .util.sql.oracle.statement import GET_ALL_TABLE, TAB_COMMENT_STATS, TABLE_DES_STATS
-from .util.sql.description import get_table_docs,write_to_execl, split_table_name
+from tkinter import ttk
+
 import cx_Oracle as Cx
+from docx import Document
+from pandas import ExcelWriter
+
 from .util.config import LOG
+from .util.excel.xls_util import write_content
+from .util.sql.description import get_table_docs, write_to_execl, split_table_name, write_to_word
+from .util.sql.oracle.statement import GET_ALL_TABLE
 
 
 class ObjectViewer:
@@ -199,7 +201,7 @@ class ObjectViewer:
             t_download.setDaemon(True)
             t_download.start()
         except threading.ThreadError as err:
-            messagebox.showerror("错误","线程开启失败！\n%s" % err)
+            messagebox.showerror("错误", "线程开启失败！\n%s" % err)
             self.btn_download.configure(state="active")
         else:
             self.btn_download.configure(state="active")
@@ -207,6 +209,7 @@ class ObjectViewer:
     def process_doc_download(self, file_output_path=None):
         """
         文档生成
+        todo： 待处理事项： 1.word文件style定制;  word 文件目录生成。
         :param file_output_path: 文件保存路径
         :return: None
         """
@@ -216,23 +219,29 @@ class ObjectViewer:
                 os.mkdir("export")
             now = datetime.now()
             file_output_path = "export/dict_%s.xls" % now.strftime("%Y-%m-%d_%H-%M-%S")
+
         if len(list(self.selected_list)) == 0:
             messagebox.showinfo("提示:", "未选中任何表!")
             return
 
         writer = ExcelWriter(file_output_path)
+        document = Document()  # todo: Just for testing, please delete it
 
         for i, tab in enumerate(list(self.selected_list)):
             owner = ""
             tab_name = ""
             try:
                 owner, tab_name = split_table_name(tab)
-            except ValueError: # 无法解析出用户名
+            except ValueError:
+                # 无法解析出用户名
                 continue
 
             dd = get_table_docs(self.__cursor__, owner, tab_name)
             write_to_execl(writer, dd)
-
+            write_to_word(document=document, dd=dd)  # todo: Just for testing, please delete it
         write_content(file_output_path)
+        file_output_path_word = file_output_path.split(".")[0] + ".docx"
+        document.save(file_output_path_word)  # todo:  Just for testing, please delete it
+
         self.btn_download.configure(state="active")
-        messagebox.showinfo("提示", "文档《%s》已生成完毕！" % file_output_path)
+        messagebox.showinfo("提示", "文档《%s》\n  《%s》\n已生成完毕！" % (file_output_path, file_output_path_word))
