@@ -9,7 +9,15 @@ from .oracle import TAB_COMMENT_STATS, TABLE_DES_STATS, GET_ALL_USER_OBJ
 __all__ = ['get_table_docs', 'write_to_execl', 'write_to_word', 'split_table_name']
 
 
-def get_table_docs(cursor, table_owner, table_name):
+def get_table_docs(cursor: cx.CURSOR, table_owner: str, table_name: str) -> dict:
+    """
+    获取单张表的表结构描述。
+    :rtype: dict
+    :param cursor: 数据库游标
+    :param table_owner: 用户
+    :param table_name: 表名
+    :return: `dict` or None
+    """
     table_name = table_name.upper().strip()
     if isinstance(cursor, cx.Cursor):
         _tab_comments = TAB_COMMENT_STATS % (repr(table_owner), repr(table_name))
@@ -56,7 +64,7 @@ def write_to_word(document: Document, dd: dict, style=None, **kwargs):
     """
     写入word 文件
     todo: 待加入对样式的支持
-    :param document: Document 对象
+    :param document: `Document` 对象
     :param dd: 内容，字典
     :param style 表格样式
     :return: none
@@ -69,7 +77,7 @@ def write_to_word(document: Document, dd: dict, style=None, **kwargs):
         heading_level = 2
     # 写标题
     document.add_heading(table_name, level=heading_level)
-    document.add_paragraph('\r')
+    document.add_paragraph('\n')
 
     #  #############################################表描述#########################################
     table = document.add_table(rows=table_desc.shape[0] + 1, cols=4)
@@ -91,7 +99,7 @@ def write_to_word(document: Document, dd: dict, style=None, **kwargs):
         row_cells[3].text = table_desc.iloc[i, 3]
 
     # 列字典
-    document.add_paragraph('\r')
+    document.add_paragraph('\n')
     table = document.add_table(rows=table_comment.shape[0] + 1, cols=6)
     hdr_cells = table.rows[0].cells
     #  写表头 '序号', '列英文名', '数据类型', '是否可空', '默认值', '列中文名'
