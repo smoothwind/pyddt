@@ -245,3 +245,5 @@ class ObjectViewer:
 
         self.btn_download.configure(state="active")
         messagebox.showinfo("提示", "文档《%s》\n  《%s》\n已生成完毕！" % (file_output_path, file_output_path_word))
+
+
