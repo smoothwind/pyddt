@@ -1,17 +1,17 @@
 # -*- coding: UTF-8 -*-
-import os
 import tkinter as tk
 from configparser import ConfigParser
-from tkinter import ttk
 from tkinter import messagebox
+from tkinter import ttk
+
+import cx_Oracle as Cx
 
 from src.gui.work_panel import ObjectViewer
-import cx_Oracle as Cx
 
 ini_file_name = 'options.ini'
 
 
-def parse_conn_list(cf, section, key):
+def parse_conn_list(cf: ConfigParser, section, key) -> list:
     values: list = []
     if isinstance(cf, ConfigParser) and str(section).__len__() > 0 and str(key).__len__() > 0 and\
             cf is not None:
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     conn_list = parse_conn_list(cf=cf, section="oracle", key="list")
 
     """
-    ################################################ 2.事件处理函数 ########################################################
+    ################################################ 2.事件处理函数 ####################################################
     """
 
 

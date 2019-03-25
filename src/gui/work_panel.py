@@ -3,17 +3,11 @@
 import threading
 import tkinter as tk
 from datetime import datetime
-from tkinter import messagebox
-from tkinter import ttk
+from tkinter import messagebox, ttk
 
 import cx_Oracle as Cx
 from docx import Document
 from pandas import ExcelWriter
-
-from .util.config import LOG
-from .util.excel.xls_util import write_content
-from .util.sql.description import get_table_docs, write_to_execl, split_table_name, write_to_word
-from .util.sql.oracle.statement import GET_ALL_TABLE
 
 
 class ObjectViewer:
@@ -27,8 +21,8 @@ class ObjectViewer:
     frame_mid_left: tk.Frame
     frame_mid_left_top: tk.Frame
     frame_mid_left_bottom: tk.Frame
-    frame_mid_mid: tk.Frame
     frame_mid_right: tk.Frame
+    frame_mid_right_right: tk.Frame
     frame_bottom: tk.Frame
     btn_add: tk.Button
     btn_del: tk.Button
@@ -46,27 +40,41 @@ class ObjectViewer:
         if isinstance(connection, Cx.Connection) is not True:
             messagebox.showerror("error", "不是有效的数据库链接！")
 
+        self.__screen__ = SysInfo.get_screen_size()
+        if self.__screen__ is not None:
+            self.__main_width__ = self.__screen__[0] / 2
+            self.__main_height__ = self.__screen__[1] / 2
+
         self.__conn__: Cx.Connection = connection
         self.__cursor__: Cx.Cursor = connection.cursor()
 
-        self.frame_top = tk.Frame(self.window)
-        self.frame_mid = tk.Frame(self.window, height=300, width=500)
-        self.frame_mid_left = tk.Frame(self.frame_mid, height=300, width=200)
-        self.frame_mid_left_top = tk.Frame(self.frame_mid_left, width=200)
-        self.frame_mid_left_bottom = tk.Frame(self.frame_mid_left, width=200)
-        self.frame_bottom = tk.Frame(self.window)
-        self.frame_mid_mid = tk.Frame(self.frame_mid, height=300, width=90)
-        self.frame_mid_right = tk.Frame(self.frame_mid, height=300, width=200)
+        self.frame_top = tk.Frame(self.window, height=0.1 * self.__main_height__, width=self.__main_width__)
+        self.frame_mid = tk.Frame(self.window, height=0.8 * self.__main_height__, width=self.__main_width__)
 
+        self.frame_mid_left = tk.Frame(self.frame_mid, height=0.8 * self.__main_height__,
+                                       width=0.35 * self.__main_width__)
+        self.frame_mid_left_top = tk.Frame(self.frame_mid_left, width=0.28 * self.__main_width__)
+        self.frame_mid_left_bottom = tk.Frame(self.frame_mid_left, width=0.28 * self.__main_width__)
+
+        self.frame_mid_right = tk.Frame(self.frame_mid, height=0.8 * self.__main_height__,
+                                        width=0.6 * self.__main_width__)
+
+        self.frame_mid_right_left = tk.Frame(self.frame_mid_right, height=0.8 * self.__main_height__,
+                                             width=0.1 * self.__main_width__)
+        self.frame_mid_right_right = tk.Frame(self.frame_mid_right, height=0.8 * self.__main_height__,
+                                              width=0.5 * self.__main_width__)
+
+        self.frame_bottom = tk.Frame(self.window, height=0.1 * self.__main_height__, width=self.__main_width__)
         self.frame_top.pack(side="top")
+        self.frame_mid_left_top.pack(side='top')
+        self.frame_mid_left_bottom.pack(side='bottom')
+        self.frame_mid_left.pack(side='left')
+
+        self.frame_mid_right_left.pack(side="left")
+        self.frame_mid_right_right.pack(side="right")
+        self.frame_mid_right.pack(side="right")
         self.frame_mid.pack()
-        self.frame_mid_left.pack(side='left', anchor='n', fill='y')
-        self.frame_mid_mid.pack(after=self.frame_mid_left, fill='y')
-        self.frame_mid_right.pack(side='right',anchor='n', fill='y')
-        self.frame_mid_left_top.pack(side='top', anchor='n', fill='x')
-        self.frame_mid_left_bottom.pack(side='bottom', anchor='s', fill='x')
-        # frame_mid_mid.pack(after=frame_mid_left, anchor='n', fill='y')
-        # frame_mid_right.pack(after=frame_mid_mid, anchor='n', side='right', fill='y')
+
         self.frame_bottom.pack(side="bottom")
 
         self.tab_tree = ttk.Treeview(self.frame_mid_left_top, selectmode='extended', padding=[10, 0, 5, 10])
@@ -74,23 +82,24 @@ class ObjectViewer:
         self.set_tree()
         self.tab_tree.heading("#0", text="数据库对象浏览器", anchor="w")
         self.tab_tree.pack(side='left', fill='x')
-        self.vsb = ttk.Scrollbar(self.frame_mid_left_top, orient="vertical", command=self.tab_tree.yview)
+        self.vsb = tk.Scrollbar(self.frame_mid_left_top, orient="vertical", command=self.tab_tree.yview)
         self.vsb.pack(side='right', fill='y')
         self.tab_tree.configure(yscrollcommand=self.vsb.set)
+
         self.hsb = ttk.Scrollbar(self.frame_mid_left_bottom, orient="horizontal", command=self.tab_tree.xview)
-        self.hsb.set(0.2, 1)
-        self.hsb.pack(side='bottom', fill='x', anchor='s')
+        self.hsb.pack(side='bottom', fill='x')
         self.tab_tree.configure(xscrollcommand=self.hsb.set)
 
-        self.btn_add = tk.Button(self.frame_mid_mid, text="->", width=10, command=self.btn_add_click)
-        self.btn_del = tk.Button(self.frame_mid_mid, text="<-", width=10, command=self.btn_del_click)
-        self.btn_add_all = tk.Button(self.frame_mid_mid, text="->>", width=10, command=self.btn_add_all_click)
-        self.btn_clean = tk.Button(self.frame_mid_mid, text="<<-", width=10, command=self.btn_clean_click)
+        self.btn_add = tk.Button(self.frame_mid_right_left, text="->", width=10, command=self.btn_add_click)
+        self.btn_del = tk.Button(self.frame_mid_right_left, text="<-", width=10, command=self.btn_del_click)
+        self.btn_add_all = tk.Button(self.frame_mid_right_left, text="->>", width=10, command=self.btn_add_all_click)
+        self.btn_clean = tk.Button(self.frame_mid_right_left, text="<<-", width=10, command=self.btn_clean_click)
         self.btn_download = tk.Button(self.frame_bottom, text="生成文档", width=10, command=self.btn_download_click)
-        self.box_prepared_export = tk.Listbox(self.frame_mid_right, selectmode="multiple")
+        self.box_prepared_export = tk.Listbox(self.frame_mid_right_right, selectmode="multiple")
 
-        self.b_vsb = tk.Scrollbar(self.frame_mid_right, orient="vertical", command=self.box_prepared_export.yview)
-        self.b_hsb = tk.Scrollbar(self.frame_mid_right, orient="horizontal", command=self.box_prepared_export.xview)
+        self.b_vsb = tk.Scrollbar(self.frame_mid_right_right, orient="vertical", command=self.box_prepared_export.yview)
+        self.b_hsb = tk.Scrollbar(self.frame_mid_right_right, orient="horizontal",
+                                  command=self.box_prepared_export.xview)
         self.box_prepared_export.configure(yscrollcommand=self.b_vsb.set, xscrollcommand=self.b_hsb.set)
         self.b_vsb.pack(side="right", fill='y')
         self.b_hsb.pack(side="bottom", fill='x')
@@ -101,8 +110,7 @@ class ObjectViewer:
         self.btn_clean.grid(row=9)
         self.btn_download.grid()
         self.box_prepared_export.pack()
-
-        self.window.geometry("400x500")
+        self.window.geometry("%dx%d" % (self.__main_width__, self.__main_height__))
         self.window.size()
         self.window.mainloop()
 
@@ -247,3 +255,5 @@ class ObjectViewer:
         messagebox.showinfo("提示", "文档《%s》\n  《%s》\n已生成完毕！" % (file_output_path, file_output_path_word))
 
 
+if __name__ == '__main__':
+    obj = ObjectViewer(None)
