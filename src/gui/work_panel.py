@@ -9,6 +9,12 @@ import cx_Oracle as Cx
 from docx import Document
 from pandas import ExcelWriter
 
+from util.config import LOG
+from util.excel.xls_util import write_content
+from util.sql.description import write_to_word, write_to_execl, get_table_docs, split_table_name
+from util.sql.oracle import GET_ALL_TABLE
+from util.sysinfo import SysInfo
+
 
 class ObjectViewer:
     table_list: dict = {}
