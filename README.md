@@ -80,7 +80,7 @@ UI 比较简陋
 
 [代码位置](src/gui/work_panel.py)
 
-![1553499221665](README.assets\1553499221665.png)
+![1553499221665](README.assets/1553499221665.png)
 
 #### 窗体布局
 
