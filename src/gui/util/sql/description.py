@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import cx_Oracle as cx
 from pandas import DataFrame
+
 from src.gui.util.config import LOG
 from .oracle import TAB_COMMENT_STATS, TABLE_DES_STATS, GET_ALL_USER_OBJ
 
@@ -35,14 +36,18 @@ def write_to_execl(writer, dd):
         sheet_name = str(tab_comments.loc[0, 3])
     print(sheet_name)
     print(type(sheet_name))
+    header1 = ['用户', '表名', '类型', '备注', '目录']
+
     try:
-        tab_comments.to_excel(writer, sheet_name=sheet_name, index=False, header=['用户', '表名', '类型', '备注'], startrow=0)
-        col_desc.to_excel(writer, sheet_name=sheet_name, index=False,
+        tab_comments.to_excel(excel_writer=writer, sheet_name=sheet_name, index=False, header=header1,
+                              inf_rep="", startrow=0)
+        col_desc.to_excel(excel_writer=writer, sheet_name=sheet_name, index=False,
                           header=['序号', '列英文名', '数据类型', '是否可空', '默认值', '列中文名'], startrow=5, inf_rep="")
-    except:
+    except Exception as ex:
         LOG.error("%s write failed!" % sheet_name)
-    finally:
-        writer.save()
+        LOG.error(ex.args)
+        print(ex)
+    writer.save()
 
 
 def split_table_name(table_name: str):
