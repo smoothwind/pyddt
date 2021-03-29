@@ -230,6 +230,7 @@ class ObjectViewer:
             except ValueError: # 无法解析出用户名
                 continue
 
+
             dd = get_table_docs(self.__cursor__, owner, tab_name)
             write_to_execl(writer, dd)
 

@@ -5,7 +5,9 @@ TABLE_DES_STATEMENTS = """SELECT T.COLUMN_ID,\
        T.DATA_TYPE || CASE WHEN T.DATA_PRECISION IS NOT NULL THEN\
           '(' || T.DATA_PRECISION ||\
           DECODE(T.DATA_SCALE, 0, '', NULL, '', ',' || T.DATA_SCALE) || ')'\
-         ELSE\
+         WHEN t.CHAR_LENGTH <> 0 then
+           '(' || t.CHAR_LENGTH ||')'\
+         ELSE\ 
           NULL\
        END AS DATA_TYPE,\
        T.NULLABLE,\
@@ -25,6 +27,8 @@ TABLE_DES_STATEMENTS_2 = """SELECT T.COLUMN_ID,\
        T.DATA_TYPE || CASE WHEN T.DATA_PRECISION IS NOT NULL THEN\
           '(' || T.DATA_PRECISION ||\
           DECODE(T.DATA_SCALE, 0, '', NULL, '', ',' || T.DATA_SCALE) || ')'\
+         WHEN t.CHAR_LENGTH <> 0 then
+           '(' || t.CHAR_LENGTH ||')'\
          ELSE\
           NULL\
        END AS DATA_TYPE,\
@@ -41,10 +45,12 @@ TABLE_DES_STATEMENTS_2 = """SELECT T.COLUMN_ID,\
  ORDER BY T.COLUMN_ID """
 TABLE_DES_STATEMENTS_3 = """SELECT T.COLUMN_ID,\
        T.COLUMN_NAME AS COL_NAME,\
-       T.DATA_TYPE || CASE WHEN T.DATA_PRECISION IS NOT NULL THEN\
+        T.DATA_TYPE || CASE WHEN T.DATA_PRECISION IS NOT NULL THEN\
           '(' || T.DATA_PRECISION ||\
           DECODE(T.DATA_SCALE, 0, '', NULL, '', ',' || T.DATA_SCALE) || ')'\
-         ELSE\
+         WHEN t.CHAR_LENGTH <> 0 then
+           '(' || t.CHAR_LENGTH ||')'\
+         ELSE\ 
           NULL\
        END AS DATA_TYPE,\
        T.NULLABLE,\

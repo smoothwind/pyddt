@@ -3,6 +3,8 @@ import os.path as oph
 import win32com.client as win32
 import xlrd
 import xlutils.copy as xls_copy
+import xlwt
+
 from src.gui.util.config import LOG
 
 __all__ = ['write_content', 'ms_convert']
@@ -28,9 +30,9 @@ def parser_content(reader, content_name):
     for sheet in reader.sheet_names():
         if sheet != content_name:
             # print(sheet.cell_value(1,1),sheet.cell_value(1,3))
-            hyperlink = "=HYPERLINK(\"#%s!A1\",\"%s\")" % (sheet, sheet)
+            hyperlink = "HYPERLINK(\"#%s!A1\",\"%s\")" % (sheet, sheet)
             ws = reader.sheet_by_name(sheet)
-            contents.append((ws.cell_value(1, 1), ws.cell_value(1, 3), hyperlink))
+            contents.append((ws.cell_value(1, 1), ws.cell_value(1, 3), xlwt.Formula(hyperlink)))
 
     LOG.debug("目录解析完毕")
     return contents
@@ -91,8 +93,10 @@ def write_content(file_path, content_name=None):
 
         ### 更新返回
         tgt_sheet = _wb.get_sheet(_sheet_name)
-        _address = '=HYPERLINK("#%s!A%d","%s")' % (content_name, int(_i + 1), content_name)
-        tgt_sheet.write(1, 4, _address)
+        # _address = '=HYPERLINK("#%s!A%d","%s")' % (content_name, int(_i + 1), content_name)
+        # tgt_sheet.write(1, 4, _address)
+        # _address = 'HYPERLINK("#%s!A%d","%s")' % (content_name, int(_i + 1), content_name)
+        tgt_sheet.write(1, 4, xlwt.Formula('HYPERLINK("#{}!A1"; "{}")'.format(content_name, content_name)))
 
         LOG.debug("写入目录：%s-%s-%s" % _content)
     """
